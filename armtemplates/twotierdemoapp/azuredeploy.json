@@ -2,10 +2,30 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        
+        "adminUsername": {
+            "defaultValue": "cloudadmin",
+            "type": "String"
+        },
+
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Remote desktop user password. Must be a strong password"
+            },
+        "storageAccounts_twotierdemoappdiag_name": {
+            "defaultValue": "twotierdemoappdiag2",
+            "type": "String"
+        },
+        
+        
         "virtualMachines_mylinuxserver_name": {
             "defaultValue": "mylinuxserver",
             "type": "String"
         },
+
+      
+
         "virtualMachines_windowsserver_name": {
             "defaultValue": "windowsserver",
             "type": "String"
@@ -26,10 +46,7 @@
             "defaultValue": "windowsserver-ip",
             "type": "String"
         },
-        "storageAccounts_twotierdemoappdiag_name": {
-            "defaultValue": "twotierdemoappdiag",
-            "type": "String"
-        },
+     
         "virtualNetworks_twotierdemoapp_vnet_name": {
             "defaultValue": "twotierdemoapp-vnet",
             "type": "String"
@@ -617,8 +634,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_mylinuxserver_name'), '_OsDisk_1_1f01696eaf6544aea668ba852d6c0a43'))]"
+                            "storageAccountType": "Premium_LRS"                           
                         },
                         "diskSizeGB": 30
                     },
@@ -626,7 +642,8 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_mylinuxserver_name')]",
-                    "adminUsername": "cloudadmin",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true
@@ -675,8 +692,8 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_windowsserver_name'), '_OsDisk_1_1a49140066ed40948721a19e3d68e7d3'))]"
+                            "storageAccountType": "Premium_LRS"
+                            
                         },
                         "diskSizeGB": 30
                     },
@@ -684,7 +701,9 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_windowsserver_name')]",
-                    "adminUsername": "cloudadmin",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true
