@@ -2,30 +2,24 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        
         "adminUsername": {
             "defaultValue": "cloudadmin",
             "type": "String"
         },
-
         "adminPassword": {
             "type": "securestring",
             "metadata": {
                 "description": "Remote desktop user password. Must be a strong password"
-            },
+            }
+        },
         "storageAccounts_twotierdemoappdiag_name": {
             "defaultValue": "twotierdemoappdiag2",
             "type": "String"
         },
-        
-        
         "virtualMachines_mylinuxserver_name": {
             "defaultValue": "mylinuxserver",
             "type": "String"
         },
-
-      
-
         "virtualMachines_windowsserver_name": {
             "defaultValue": "windowsserver",
             "type": "String"
@@ -46,7 +40,6 @@
             "defaultValue": "windowsserver-ip",
             "type": "String"
         },
-     
         "virtualNetworks_twotierdemoapp_vnet_name": {
             "defaultValue": "twotierdemoapp-vnet",
             "type": "String"
@@ -634,7 +627,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS"                           
+                            "storageAccountType": "Premium_LRS"
                         },
                         "diskSizeGB": 30
                     },
@@ -693,7 +686,6 @@
                         "caching": "ReadWrite",
                         "managedDisk": {
                             "storageAccountType": "Premium_LRS"
-                            
                         },
                         "diskSizeGB": 30
                     },
@@ -703,7 +695,6 @@
                     "computerName": "[parameters('virtualMachines_windowsserver_name')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true
