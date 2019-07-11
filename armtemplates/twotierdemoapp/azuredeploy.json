@@ -495,54 +495,8 @@
                 }
             }
         },
-        {
-            "type": "microsoft.devtestlab/schedules",
-            "apiVersion": "2016-05-15",
-            "name": "[parameters('schedules_shutdown_computevm_mylinuxserver_name')]",
-            "location": "southcentralus",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_mylinuxserver_name'))]"
-            ],
-            "properties": {
-                "status": "Enabled",
-                "taskType": "ComputeVmShutdownTask",
-                "dailyRecurrence": {
-                    "time": "1900"
-                },
-                "timeZoneId": "UTC",
-                "notificationSettings": {
-                    "status": "Disabled",
-                    "timeInMinutes": 30
-                },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_mylinuxserver_name'))]",
-                "provisioningState": "Succeeded",
-                "uniqueIdentifier": "1cfc69bf-abd7-4974-ab06-5ed51a2093da"
-            }
-        },
-        {
-            "type": "microsoft.devtestlab/schedules",
-            "apiVersion": "2016-05-15",
-            "name": "[parameters('schedules_shutdown_computevm_windowsserver_name')]",
-            "location": "westeurope",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_windowsserver_name'))]"
-            ],
-            "properties": {
-                "status": "Enabled",
-                "taskType": "ComputeVmShutdownTask",
-                "dailyRecurrence": {
-                    "time": "1900"
-                },
-                "timeZoneId": "UTC",
-                "notificationSettings": {
-                    "status": "Disabled",
-                    "timeInMinutes": 30
-                },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_windowsserver_name'))]",
-                "provisioningState": "Succeeded",
-                "uniqueIdentifier": "d71d1826-9ee6-438f-9d79-6e0bfd744f1e"
-            }
-        },
+        
+        
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2019-04-01",
