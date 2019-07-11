@@ -6,12 +6,12 @@
             "defaultValue": "cloudadmin",
             "type": "String"
         },
-
         "adminPassword": {
             "type": "securestring",
             "metadata": {
                 "description": "Remote desktop user password. Must be a strong password"
-            },
+            }
+        },
         "storageAccounts_twotierdemoappdiag498_name": {
             "defaultValue": "twotierdemoappdiag498",
             "type": "String"
@@ -21,9 +21,9 @@
             "type": "String"
         },
         "DTLSubnetId": {
-			"type": "string",
-			"defaultValue": "$(LabSubnetId)"
-		},
+            "type": "string",
+            "defaultValue": "$(LabSubnetId)"
+        },
         "virtualMachines_windowsserver_name": {
             "defaultValue": "windowsserver",
             "type": "String"
@@ -56,7 +56,6 @@
             "defaultValue": "twotierdemoappvnet950",
             "type": "String"
         },
-      
         "networkSecurityGroups_mylinuxserver_nsg_name": {
             "defaultValue": "mylinuxserver-nsg",
             "type": "String"
