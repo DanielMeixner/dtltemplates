@@ -80,9 +80,7 @@
     "ubuntuvmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]",
     "ubuntuvmSubnetRef": "[concat(variables('ubuntuvmVnetID'), '/subnets/', variables('vnet01Subnet1Name'))]",
     "ubuntuvmStorageAccountContainerName": "vhds",
-    "ubuntuvmName": "[concat(parameters('ubuntuvmName'),utcNow())]",
-    "windowsvmName":"[concat(parameters('windowsvmName'),utcNow())]",
-    "ubuntuvmNicName": "[concat(variables('ubuntuvmName'), 'nic')]",
+    "ubuntuvmNicName": "[concat(parameters('ubuntuvmName'), 'NetworkInterface')]",
     "windowsvmImagePublisher": "MicrosoftWindowsServer",
     "windowsvmImageOffer": "WindowsServer",
     "windowsvmOSDiskName": "windowsvmOSDisk",
@@ -90,8 +88,8 @@
     "windowsvmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]",
     "windowsvmSubnetRef": "[concat(variables('windowsvmVnetID'), '/subnets/', variables('vnet01Subnet2Name'))]",
     "windowsvmStorageAccountContainerName": "vhds",
-    "windowsvmNicName": "[concat(variables('windowsvmName'), 'nic')]",
-    "uvmpipName": "[concat('uvmpip-',utcNow())]"
+    "windowsvmNicName": "[concat(parameters('windowsvmName'), 'NetworkInterface')]",
+    "uvmpipName": "uvmpip"
   },
   "resources": [
     {
@@ -169,7 +167,7 @@
       }
     },
     {
-      "name": "[variables('ubuntuvmName')]",
+      "name": "[parameters('ubuntuvmName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -185,7 +183,7 @@
           "vmSize": "[variables('ubuntuvmVmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('ubuntuvmName')]",
+          "computerName": "[parameters('ubuntuvmName')]",
           "adminUsername": "[parameters('ubuntuvmAdminUsername')]",
           "adminPassword": "[parameters('ubuntuvmAdminPassword')]"
         },
@@ -240,7 +238,7 @@
       }
     },
     {
-      "name": "[variables('windowsvmName')]",
+      "name": "[parameters('windowsvmName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -256,7 +254,7 @@
           "vmSize": "[variables('windowsvmVmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('windowsvmName')]",
+          "computerName": "[parameters('windowsvmName')]",
           "adminUsername": "[parameters('windowsvmAdminUsername')]",
           "adminPassword": "[parameters('windowsvmAdminPassword')]"
         },
