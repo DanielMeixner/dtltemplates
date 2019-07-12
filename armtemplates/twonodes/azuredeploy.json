@@ -1,0 +1,269 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageaccount01Type": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "ubuntuvmName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ubuntuvmAdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ubuntuvmAdminPassword": {
+      "type": "securestring"
+    },
+    "ubuntuvmUbuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.2-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.2-LTS"
+      ]
+    },
+    "windowsvmName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "windowsvmAdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "windowsvmAdminPassword": {
+      "type": "securestring"
+    },
+    "windowsvmWindowsOSVersion": {
+      "type": "string",
+      "defaultValue": "2012-R2-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "Windows-Server-Technical-Preview"
+      ]
+    }},
+  "variables": {
+    "storageaccount01Name": "[concat('sa01', uniqueString(resourceGroup().id))]",
+    "vnet01Prefix": "10.0.0.0/16",
+    "vnet01Subnet1Name": "Subnet-1",
+    "vnet01Subnet1Prefix": "10.0.0.0/24",
+    "vnet01Subnet2Name": "Subnet-2",
+    "vnet01Subnet2Prefix": "10.0.1.0/24",
+    "ubuntuvmImagePublisher": "Canonical",
+    "ubuntuvmImageOffer": "UbuntuServer",
+    "ubuntuvmOSDiskName": "ubuntuvmOSDisk",
+    "ubuntuvmVmSize": "Standard_D2_v2",
+    "ubuntuvmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]",
+    "ubuntuvmSubnetRef": "[concat(variables('ubuntuvmVnetID'), '/subnets/', variables('vnet01Subnet1Name'))]",
+    "ubuntuvmStorageAccountContainerName": "vhds",
+    "ubuntuvmNicName": "[concat(parameters('ubuntuvmName'), 'NetworkInterface')]",
+    "windowsvmImagePublisher": "MicrosoftWindowsServer",
+    "windowsvmImageOffer": "WindowsServer",
+    "windowsvmOSDiskName": "windowsvmOSDisk",
+    "windowsvmVmSize": "Standard_D2_v2",
+    "windowsvmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]",
+    "windowsvmSubnetRef": "[concat(variables('windowsvmVnetID'), '/subnets/', variables('vnet01Subnet2Name'))]",
+    "windowsvmStorageAccountContainerName": "vhds",
+    "windowsvmNicName": "[concat(parameters('windowsvmName'), 'NetworkInterface')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('storageaccount01Name')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('storageaccount01Type')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "storageaccount01"
+      },
+      "kind": "Storage"
+    },
+    {
+      "name": "vnet01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "vnet01"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vnet01Prefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('vnet01Subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('vnet01Subnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[variables('vnet01Subnet2Name')]",
+            "properties": {
+              "addressPrefix": "[variables('vnet01Subnet2Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('ubuntuvmNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]"
+      ],
+      "tags": {
+        "displayName": "ubuntuvmNic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('ubuntuvmSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('ubuntuvmName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageaccount01Name'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('ubuntuvmNicName'))]"
+      ],
+      "tags": {
+        "displayName": "ubuntuvm"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('ubuntuvmVmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('ubuntuvmName')]",
+          "adminUsername": "[parameters('ubuntuvmAdminUsername')]",
+          "adminPassword": "[parameters('ubuntuvmAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('ubuntuvmImagePublisher')]",
+            "offer": "[variables('ubuntuvmImageOffer')]",
+            "sku": "[parameters('ubuntuvmUbuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "ubuntuvmOSDisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccount01Name')), '2016-01-01').primaryEndpoints.blob, variables('ubuntuvmStorageAccountContainerName'), '/', variables('ubuntuvmOSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ubuntuvmNicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('windowsvmNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]"
+      ],
+      "tags": {
+        "displayName": "windowsvmNic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('windowsvmSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('windowsvmName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageaccount01Name'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('windowsvmNicName'))]"
+      ],
+      "tags": {
+        "displayName": "windowsvm"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('windowsvmVmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('windowsvmName')]",
+          "adminUsername": "[parameters('windowsvmAdminUsername')]",
+          "adminPassword": "[parameters('windowsvmAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('windowsvmImagePublisher')]",
+            "offer": "[variables('windowsvmImageOffer')]",
+            "sku": "[parameters('windowsvmWindowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "windowsvmOSDisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccount01Name')), '2016-01-01').primaryEndpoints.blob, variables('windowsvmStorageAccountContainerName'), '/', variables('windowsvmOSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('windowsvmNicName'))]"
+            }
+          ]
+        }
+      }
+    }],
+  "outputs": {}
+}
