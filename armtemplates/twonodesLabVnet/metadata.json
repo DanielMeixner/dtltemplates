@@ -1,4 +1,6 @@
 ﻿{
   "itemDisplayName": "Dmx.TwoNodesLabVnet",
-  "description": "A simple Env consisting of two machines connected with Lab Vnet"
+  "description": "A simple Env consisting of two machines connected with Lab Vnet",
+  "githubUsername": "DanielMeixner",  
+  "summary": "This template provides 2 machines, 1 win, 1 ubuntu in the vnet of your DevTest Lab."
 }

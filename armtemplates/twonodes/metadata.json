@@ -1,4 +1,7 @@
 ﻿{
   "itemDisplayName": "Dmx.TwoNodes",
-  "description": "A simple Env consisting of two machines "
+  "description": "A simple Env consisting of two machines ",
+  "githubUsername": "DanielMeixner",  
+  "summary": "This template provides 2 machines, 1 win, 1 ubuntu in a common vnet."
+
 }
