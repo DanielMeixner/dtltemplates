@@ -80,8 +80,8 @@
     "ubuntuvmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet01')]",
     "ubuntuvmSubnetRef": "[concat(variables('ubuntuvmVnetID'), '/subnets/', variables('vnet01Subnet1Name'))]",
     "ubuntuvmStorageAccountContainerName": "vhds",
-    "ubuntuvmName": "[concat(parameters('ubuntuvmName'),utcNow()]",
-    "windowsvmName":"[concat(parameters('windowsvmName'),utcNow()]",
+    "ubuntuvmName": "[concat(parameters('ubuntuvmName'),utcNow())]",
+    "windowsvmName":"[concat(parameters('windowsvmName'),utcNow())]",
     "ubuntuvmNicName": "[concat(variables('ubuntuvmName'), 'nic')]",
     "windowsvmImagePublisher": "MicrosoftWindowsServer",
     "windowsvmImageOffer": "WindowsServer",
@@ -91,7 +91,7 @@
     "windowsvmSubnetRef": "[concat(variables('windowsvmVnetID'), '/subnets/', variables('vnet01Subnet2Name'))]",
     "windowsvmStorageAccountContainerName": "vhds",
     "windowsvmNicName": "[concat(variables('windowsvmName'), 'nic')]",
-    "uvmpipName": "[concat('uvmpip-',utcNow()]"
+    "uvmpipName": "[concat('uvmpip-',utcNow())]"
   },
   "resources": [
     {
