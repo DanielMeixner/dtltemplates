@@ -47,6 +47,10 @@
     "windowsvmAdminPassword": {
       "type": "securestring"
     },
+    "DTLSubnetId": {
+      "type": "string",
+      "defaultValue": "$(LabSubnetId)"
+  },
     "windowsvmWindowsOSVersion": {
       "type": "string",
       "defaultValue": "2012-R2-Datacenter",
@@ -145,7 +149,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
-                "id": "[variables('ubuntuvmSubnetRef')]"
+                "id": "[parameters('DTLSubnetId')]"
               }
             }
           }
@@ -215,8 +219,8 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('windowsvmSubnetRef')]"
+              "subnet": {                
+                "id": "[parameters('DTLSubnetId')]"
               }
             }
           }
