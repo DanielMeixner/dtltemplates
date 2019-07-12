@@ -15,10 +15,12 @@
     },
     "ubuntuvmName": {
       "type": "string",
+      "defaultValue": "ubuntuvm01",
       "minLength": 1
     },
     "ubuntuvmAdminUserName": {
       "type": "string",
+      "defaultValue": "cloudadmin",
       "minLength": 1
     },
     "ubuntuvmAdminPassword": {
@@ -34,10 +36,12 @@
     },
     "windowsvmName": {
       "type": "string",
+      "defaultValue": "winvm01",
       "minLength": 1
     },
     "windowsvmAdminUserName": {
       "type": "string",
+      "defaultValue": "cloudadmin",
       "minLength": 1
     },
     "windowsvmAdminPassword": {
