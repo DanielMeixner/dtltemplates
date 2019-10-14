@@ -161,7 +161,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "192.168.0.4",
                 "subnet": {
-                  "id": "[parameters('DTLSubnetId')]"
+                  "id": "[variables('winvm1SubnetRef')]"
                 }
               }
             }
@@ -248,7 +248,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "192.168.0.5",
                 "subnet": {
-                  "id": "[parameters('DTLSubnetId')]"
+                  "id": "[variables('winvm1SubnetRef')]"
                 }
               }
             }
