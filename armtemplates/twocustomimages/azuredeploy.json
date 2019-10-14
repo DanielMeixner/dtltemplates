@@ -72,11 +72,11 @@
       }
     },
     "variables": {
-      "tsivnetPrefix": "172.16.0.0/12",
+      "tsivnetPrefix": "192.168.0.0/16",
       "tsivnetSubnet1Name": "Subnet-1",
-      "tsivnetSubnet1Prefix": "172.16.0.0/24",
+      "tsivnetSubnet1Prefix": "192.168.0.0/24",
       "tsivnetSubnet2Name": "Subnet-2",
-      "tsivnetSubnet2Prefix": "172.16.1.0/24",
+      "tsivnetSubnet2Prefix": "192.168.1.0/24",
       "winvm1saName": "[concat('winvm1sa', uniqueString(resourceGroup().id))]",
       "winvm1ImagePublisher": "MicrosoftWindowsServer",
       "winvm1ImageOffer": "WindowsServer",
@@ -159,7 +159,7 @@
               "name": "ipconfig1",
               "properties": {
                 "privateIPAllocationMethod": "Static",
-                "privateIPAddress": "172.18.4.4",
+                "privateIPAddress": "192.168.0.4",
                 "subnet": {
                   "id": "[parameters('DTLSubnetId')]"
                 }
@@ -246,7 +246,7 @@
               "name": "ipconfig1",
               "properties": {
                 "privateIPAllocationMethod": "Static",
-                "privateIPAddress": "172.18.4.6",
+                "privateIPAddress": "192.168.0.5",
                 "subnet": {
                   "id": "[parameters('DTLSubnetId')]"
                 }
