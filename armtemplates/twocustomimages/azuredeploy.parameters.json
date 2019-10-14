@@ -2,19 +2,19 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "ubuntuvmName": {
-      "value": "uvm1"
+    "winvm1Name": {
+      "value": "winvm1"
     },
-    "ubuntuvmAdminUserName": {
+    "winvm1AdminUserName": {
       "value": "cloudadmin"
     },
-    "windowsvmName": {
-      "value": "wvm"
+    "winvm2Name": {
+      "value": "winvm2"
     },
-    "windowsvmAdminUserName": {
+    "winvm2AdminUserName": {
       "value": "cloudadmin"
     },
-    "ubuntuvmAdminPassword": {
+    "winvm1AdminPassword": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/7f28d486-9ef2-4bd9-a295-e66f5949c6b2/resourceGroups/dmxkeyvaultrg/providers/Microsoft.KeyVault/vaults/dmxkeyvault1"
@@ -22,7 +22,7 @@
         "secretName": "pw"
       }
     },
-    "windowsvmAdminPassword": {
+    "winvm2AdminPassword": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/7f28d486-9ef2-4bd9-a295-e66f5949c6b2/resourceGroups/dmxkeyvaultrg/providers/Microsoft.KeyVault/vaults/dmxkeyvault1"
