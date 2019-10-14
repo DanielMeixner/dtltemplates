@@ -15,6 +15,7 @@
       },
       "winvm1Name": {
         "type": "string",
+        "defaultValue": "winvm1",
         "minLength": 1
       },
       "DTLSubnetId": {
@@ -23,6 +24,7 @@
       },
       "winvm1AdminUserName": {
         "type": "string",
+        "defaultValue": "cloudadmin",
         "minLength": 1
       },
       "winvm1AdminPassword": {
@@ -51,10 +53,12 @@
       },
       "winvm2Name": {
         "type": "string",
+        "defaultValue": "winvm2",
         "minLength": 1
       },
       "winvm2AdminUserName": {
         "type": "string",
+        "defaultValue": "cloudadmin",
         "minLength": 1
       },
       "winvm2AdminPassword": {
