@@ -196,6 +196,7 @@
           "storageProfile": {
         
             "osDisk": {
+              "osType":"Windows",
               "name": "winvm1OSDisk",
               "image":{   
                 "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
@@ -282,6 +283,7 @@
            
            
             "osDisk": {
+              "osType":"Windows",
               "name": "winvm2OSDisk",
               "image":{   
                 "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
