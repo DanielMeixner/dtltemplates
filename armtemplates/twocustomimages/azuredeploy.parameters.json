@@ -13,7 +13,23 @@
     },
     "winvm2AdminUserName": {
       "value": "cloudadmin"
+    },
+    "winvm1AdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/acddf089-5aac-43f9-9384-a34d0b807365/resourcegroups/TrumpfVTMLab/providers/Microsoft.KeyVault/vaults/DTLKeyVault"
+        },
+        "secretName": "pw"
+      }
     }
+      ,
+      "winvm2AdminPassword": {
+        "reference": {
+          "keyVault": {
+            "id": "/subscriptions/acddf089-5aac-43f9-9384-a34d0b807365/resourcegroups/TrumpfVTMLab/providers/Microsoft.KeyVault/vaults/DTLKeyVault"
+           },
+          "secretName": "pw"
+        }
   
     
   }
