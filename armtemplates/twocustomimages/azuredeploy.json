@@ -194,7 +194,7 @@
             "adminPassword": "[parameters('winvm1AdminPassword')]"
           },
           "storageProfile": {
-            "createOption": "FromImage",
+        
             "osDisk": {
               "name": "winvm1OSDisk",
               "image":{   
@@ -280,7 +280,7 @@
           },
           "storageProfile": {
            
-            "createOption": "FromImage",
+           
             "osDisk": {
               "name": "winvm2OSDisk",
               "image":{   
