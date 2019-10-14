@@ -203,7 +203,7 @@
               },
               "vhd": {
                
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm1saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm1StorageAccountContainerName'), '/', variables('winvm1OSDiskName'), '.vhd')]"
+                "uri": "[concat('https://atrumpfvtmlab8998.blob.core.windows.net/', variables('winvm1StorageAccountContainerName'), '/', variables('winvm1OSDiskName'), '.vhd')]"
               },
               "caching": "ReadWrite",
               "createOption": "FromImage"
@@ -290,7 +290,7 @@
               },
               "vhd": {
 
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm2saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm2StorageAccountContainerName'), '/', variables('winvm2OSDiskName'), '.vhd')]"
+                "uri": "[concat('https://atrumpfvtmlab8998.blob.core.windows.net/', variables('winvm2StorageAccountContainerName'), '/', variables('winvm2OSDiskName'), '.vhd')]"
               },
               "caching": "ReadWrite",
               "createOption": "FromImage"
