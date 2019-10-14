@@ -194,17 +194,15 @@
             "adminPassword": "[parameters('winvm1AdminPassword')]"
           },
           "storageProfile": {
-            "imageReference": {
-              "publisher": "[variables('winvm1ImagePublisher')]",
-              "offer": "[variables('winvm1ImageOffer')]",
-              "sku": "[parameters('winvm1WindowsOSVersion')]",
-              "version": "latest"
-            },
+            "createOption": "FromImage",
             "osDisk": {
               "name": "winvm1OSDisk",
-              "vhd": {
+              "image":{   
                 "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
-                //"uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm1saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm1StorageAccountContainerName'), '/', variables('winvm1OSDiskName'), '.vhd')]"
+              },
+              "vhd": {
+               
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm1saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm1StorageAccountContainerName'), '/', variables('winvm1OSDiskName'), '.vhd')]"
               },
               "caching": "ReadWrite",
               "createOption": "FromImage"
@@ -281,17 +279,16 @@
             "adminPassword": "[parameters('winvm2AdminPassword')]"
           },
           "storageProfile": {
-            "imageReference": {
-              "publisher": "[variables('winvm2ImagePublisher')]",
-              "offer": "[variables('winvm2ImageOffer')]",
-              "sku": "[parameters('winvm2WindowsOSVersion')]",
-              "version": "latest"
-            },
+           
+            "createOption": "FromImage",
             "osDisk": {
               "name": "winvm2OSDisk",
+              "image":{   
+                "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
+              },
               "vhd": {
-              "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
-                //"uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm2saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm2StorageAccountContainerName'), '/', variables('winvm2OSDiskName'), '.vhd')]"
+
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm2saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm2StorageAccountContainerName'), '/', variables('winvm2OSDiskName'), '.vhd')]"
               },
               "caching": "ReadWrite",
               "createOption": "FromImage"
