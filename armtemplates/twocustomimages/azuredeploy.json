@@ -1,0 +1,307 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "winvm1saType": {
+        "type": "string",
+        "defaultValue": "Standard_LRS",
+        "allowedValues": [
+          "Standard_LRS",
+          "Standard_ZRS",
+          "Standard_GRS",
+          "Standard_RAGRS",
+          "Premium_LRS"
+        ]
+      },
+      "winvm1Name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "DTLSubnetId": {
+        "type": "string",
+        "defaultValue": "$(LabSubnetId)"
+      },
+      "winvm1AdminUserName": {
+        "type": "string",
+        "minLength": 1
+      },
+      "winvm1AdminPassword": {
+        "type": "securestring"
+      },
+      "winvm1WindowsOSVersion": {
+        "type": "string",
+        "defaultValue": "2012-R2-Datacenter",
+        "allowedValues": [
+          "2008-R2-SP1",
+          "2012-Datacenter",
+          "2012-R2-Datacenter",
+          "Windows-Server-Technical-Preview"
+        ]
+      },
+      "winvm2saType": {
+        "type": "string",
+        "defaultValue": "Standard_LRS",
+        "allowedValues": [
+          "Standard_LRS",
+          "Standard_ZRS",
+          "Standard_GRS",
+          "Standard_RAGRS",
+          "Premium_LRS"
+        ]
+      },
+      "winvm2Name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "winvm2AdminUserName": {
+        "type": "string",
+        "minLength": 1
+      },
+      "winvm2AdminPassword": {
+        "type": "securestring"
+      },
+      "winvm2WindowsOSVersion": {
+        "type": "string",
+        "defaultValue": "2012-R2-Datacenter",
+        "allowedValues": [
+          "2008-R2-SP1",
+          "2012-Datacenter",
+          "2012-R2-Datacenter",
+          "Windows-Server-Technical-Preview"
+        ]
+      }
+    },
+    "variables": {
+      "tsivnetPrefix": "172.16.0.0/12",
+      "tsivnetSubnet1Name": "Subnet-1",
+      "tsivnetSubnet1Prefix": "172.16.0.0/24",
+      "tsivnetSubnet2Name": "Subnet-2",
+      "tsivnetSubnet2Prefix": "172.16.1.0/24",
+      "winvm1saName": "[concat('winvm1sa', uniqueString(resourceGroup().id))]",
+      "winvm1ImagePublisher": "MicrosoftWindowsServer",
+      "winvm1ImageOffer": "WindowsServer",
+      "winvm1OSDiskName": "winvm1OSDisk",
+      "winvm1VmSize": "Standard_D2_v2",
+      "winvm1VnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'tsivnet')]",
+      "winvm1SubnetRef": "[concat(variables('winvm1VnetID'), '/subnets/', variables('tsivnetSubnet1Name'))]",
+      "winvm1StorageAccountContainerName": "uploads",
+      "winvm1NicName": "[concat(parameters('winvm1Name'), 'NetworkInterface')]",
+      "winvm2saName": "[concat('winvm2sa', uniqueString(resourceGroup().id))]",
+      "winvm2ImagePublisher": "MicrosoftWindowsServer",
+      "winvm2ImageOffer": "WindowsServer",
+      "winvm2OSDiskName": "winvm2OSDisk",
+      "winvm2VmSize": "Standard_D2_v2",
+      "winvm2VnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'tsivnet')]",
+      "winvm2SubnetRef": "[concat(variables('winvm2VnetID'), '/subnets/', variables('tsivnetSubnet1Name'))]",
+      "winvm2StorageAccountContainerName": "uploads",
+      "winvm2NicName": "[concat(parameters('winvm2Name'), 'NetworkInterface')]"
+    },
+    "resources": [
+      {
+        "name": "tsivnet",
+        "type": "Microsoft.Network/virtualNetworks",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-03-30",
+        "dependsOn": [ ],
+        "tags": {
+          "displayName": "tsivnet"
+        },
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('tsivnetPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('tsivnetSubnet1Name')]",
+              "properties": {
+                "addressPrefix": "[variables('tsivnetSubnet1Prefix')]"
+              }
+            },
+            {
+              "name": "[variables('tsivnetSubnet2Name')]",
+              "properties": {
+                "addressPrefix": "[variables('tsivnetSubnet2Prefix')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "[variables('winvm1saName')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-01-01",
+        "sku": {
+          "name": "[parameters('winvm1saType')]"
+        },
+        "dependsOn": [ ],
+        "tags": {
+          "displayName": "winvm1sa"
+        },
+        "kind": "Storage"
+      },
+      {
+        "name": "[variables('winvm1NicName')]",
+        "type": "Microsoft.Network/networkInterfaces",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-03-30",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/virtualNetworks', 'tsivnet')]"
+        ],
+        "tags": {
+          "displayName": "winvm1Nic"
+        },
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "172.18.4.4",
+                "subnet": {
+                  "id": "[parameters('DTLSubnetId')]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "[parameters('winvm1Name')]",
+        "type": "Microsoft.Compute/virtualMachines",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2015-06-15",
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', variables('winvm1saName'))]",
+          "[resourceId('Microsoft.Network/networkInterfaces', variables('winvm1NicName'))]"
+        ],
+        "tags": {
+          "displayName": "winvm1"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[variables('winvm1VmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[parameters('winvm1Name')]",
+            "adminUsername": "[parameters('winvm1AdminUsername')]",
+            "adminPassword": "[parameters('winvm1AdminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('winvm1ImagePublisher')]",
+              "offer": "[variables('winvm1ImageOffer')]",
+              "sku": "[parameters('winvm1WindowsOSVersion')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "name": "winvm1OSDisk",
+              "vhd": {
+                "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
+                //"uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm1saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm1StorageAccountContainerName'), '/', variables('winvm1OSDiskName'), '.vhd')]"
+              },
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('winvm1NicName'))]"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "[variables('winvm2saName')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-01-01",
+        "sku": {
+          "name": "[parameters('winvm2saType')]"
+        },
+        "dependsOn": [ ],
+        "tags": {
+          "displayName": "winvm2sa"
+        },
+        "kind": "Storage"
+      },
+      {
+        "name": "[variables('winvm2NicName')]",
+        "type": "Microsoft.Network/networkInterfaces",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-03-30",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/virtualNetworks', 'tsivnet')]"
+        ],
+        "tags": {
+          "displayName": "winvm2Nic"
+        },
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "172.18.4.6",
+                "subnet": {
+                  "id": "[parameters('DTLSubnetId')]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "[parameters('winvm2Name')]",
+        "type": "Microsoft.Compute/virtualMachines",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2015-06-15",
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', variables('winvm2saName'))]",
+          "[resourceId('Microsoft.Network/networkInterfaces', variables('winvm2NicName'))]"
+        ],
+        "tags": {
+          "displayName": "winvm2"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[variables('winvm2VmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[parameters('winvm2Name')]",
+            "adminUsername": "[parameters('winvm2AdminUsername')]",
+            "adminPassword": "[parameters('winvm2AdminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('winvm2ImagePublisher')]",
+              "offer": "[variables('winvm2ImageOffer')]",
+              "sku": "[parameters('winvm2WindowsOSVersion')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "name": "winvm2OSDisk",
+              "vhd": {
+              "uri": "https://atrumpfvtmlab8998.blob.core.windows.net/uploads/L76_PLL01_V01.10.01_B004_vTSI_.vhd"
+                //"uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('winvm2saName')), '2016-01-01').primaryEndpoints.blob, variables('winvm2StorageAccountContainerName'), '/', variables('winvm2OSDiskName'), '.vhd')]"
+              },
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('winvm2NicName'))]"
+              }
+            ]
+          }
+        }
+      }],
+    "outputs": {}
+  }
+  
