@@ -1,6 +1,6 @@
 ﻿{
-  "itemDisplayName": "Dmx.TwoNodesCustomImage with static IP",
-  "description": "A simple Env consisting of two machines based on custom image with static IP ",
+  "itemDisplayName": "Two nodes with CustomImage with static IP (V2)",
+  "description": "A simple Env consisting of two machines based on custom image with static IP. See https://github.com/DanielMeixner/dtltemplates.git for details. ",
   "githubUsername": "DanielMeixner",  
   "summary": "This template provides 2 machines in a common vnet."
 

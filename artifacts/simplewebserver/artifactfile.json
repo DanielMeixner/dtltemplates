@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
-    "title": "Simple Webserver listening on Port 8080",
+    "title": "Yet another simple Webserver listening on Port 8080 (V2)",
     "publisher": "DanielMeixner",
     "description": "Installs a simple http-server based on nodejs. Listens on Port 8080. Returns a simple text message.",
     "tags": [
