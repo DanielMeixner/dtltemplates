@@ -49,7 +49,7 @@ Start-Process $runpath -ArgumentList $args -RedirectStandardOutput $outfilename 
  # dirty for now - later wait for file being created and filled.
  Start-Sleep 5
 
- $res= Get-Content .\outnew3.txt
+ $res= Get-Content $outfilename
  
  Write-Host "res:"+$res
     
