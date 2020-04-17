@@ -44,7 +44,7 @@ $args = " start --service -r " + $resourcegroup + " -s " + $subscriptionid + " -
 
 Write-Host "argslist: " + $args
 
-Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden 
+Start-Process $runpath -Verb RunAs -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden 
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
