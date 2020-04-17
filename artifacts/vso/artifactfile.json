@@ -30,6 +30,6 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass ./install.ps1 ' , ' -mail ', parameters('mail'), ' -resourcegroup ', parameters('resourcegroup'),' -subscriptionid ', parameters('subscriptionid'),  ' -planname ', parameters('planname') ) ]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"&  ./install.ps1 ' , ' -mail ', parameters('mail'), ' -resourcegroup ', parameters('resourcegroup'),' -subscriptionid ', parameters('subscriptionid'),  ' -planname ', parameters('planname') , '''\"' ) ]"
   }
 }
