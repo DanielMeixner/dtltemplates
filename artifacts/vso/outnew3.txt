@@ -1,3 +1,0 @@
-[2020-04-17 10:04:33.930 CLI I] vso v1.0.2005.59801 (pid: 17708)
-[2020-04-17 10:04:34.302 CLI I] Authenticating...
-To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code DUFBG6YPK to authenticate.
