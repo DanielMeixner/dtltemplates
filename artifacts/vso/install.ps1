@@ -44,6 +44,10 @@ $args = " start --service -r " + $resourcegroup + " -s " + $subscriptionid + " -
 
 Write-Host "argslist: " + $args
 
+
+### register for vso; vso start --service ...
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
+
 Start-Process $runpath -Verb RunAs -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden 
  
 # dirty for now - later wait for file being created and filled.
