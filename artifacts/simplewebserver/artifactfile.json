@@ -9,6 +9,13 @@
         "Node"
     ],    
     "targetOsType": "Linux",
+    "parameters": {
+    "para1": {
+      "type": "string",
+      "displayName": "para1",
+      "description": "some para"
+    }
+  },
     "runCommand": {
         "commandToExecute": "['sh linux_install_nodeserver.sh']"
     }
