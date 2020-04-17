@@ -10,28 +10,26 @@
   "parameters": {
     "mail": {
       "type": "string",
-      "displayName": "para1",
-      "description": "some para"
+      "displayName": "mail",
+      "description": "Email address where code is sent to."
     },
     "resourcegroup": {
       "type": "string",
-      "displayName": "para1",
-      "description": "some para"
+      "displayName": "resourcegroup",
+      "description": "Resource Group of VSO plan"
     },
     "subscriptionid": {
       "type": "string",
-      "displayName": "para1",
-      "description": "some para"
+      "displayName": "subscriptionid",
+      "description": "Subscription ID"
     },
     "planname": {
       "type": "string",
-      "displayName": "para1",
-      "description": "some para"
+      "displayName": "planname",
+      "description": "Name of VSO Plan"
     }
   },
-
-  
   "runCommand": {
     "commandToExecute": "[concat('powershell.exe  ./install.ps1 ' , ' -mail ', parameters('mail'), ' -resourcegroup ', parameters('resourcegroup'),' -subscriptionid ', parameters('subscriptionid'),  ' -planname ', parameters('planname') ) ]"
-}
+  }
 }
