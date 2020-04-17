@@ -31,7 +31,7 @@
    
   },
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe  .\install.ps1']" , 
+        "commandToExecute": "[concat('powershell.exe  .\install.ps1' , 
         ' -mail ', parameters('mail'),
         ' -resourcegroup ', parameters('resourcegroup'),
         ' -subscriptionid ', parameters('subscriptionid'),
