@@ -40,7 +40,7 @@ Write-Host "GUID" + $guid
 $outfilename = ".\out" + $guid + ".txt"
 Write-Host $outfilename
 
-$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname + " --service " + " -n " + "DTL_"+ $guid
+$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $guid
 
 Write-Host "argslist: " + $args
 
