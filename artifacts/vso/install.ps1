@@ -58,7 +58,7 @@ $res = Get-Content $outfilename
 Write-Host "res:"+$res
     
 $params = @{    
-    mail    = 'daniel.meixner@microsoft.com'
+    mail    = $mail + ''
     message = $res + ''
 }
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
