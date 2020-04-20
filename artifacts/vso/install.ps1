@@ -48,7 +48,7 @@ Write-Host "argslist: " + $args
 ### register for vso; vso start --service ...
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 
-Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden 
+Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
