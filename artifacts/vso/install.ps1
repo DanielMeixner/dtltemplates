@@ -56,7 +56,11 @@ Write-Host "argslist: " + $args
 ### register for vso; vso start --service ...
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 
-Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt
+
+$credential = New-Object System.Management.Automation.PSCredential $user, $password
+
+
+Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt -Credential $credential
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
