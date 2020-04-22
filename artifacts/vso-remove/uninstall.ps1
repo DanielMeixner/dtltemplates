@@ -15,11 +15,11 @@ Set-StrictMode -Version Latest
 $args = " stop "
 Write-Host "argslist: " + $args
 
-
+$outfilename = ".\output.txt"
 ### register for vso; vso start --service ...
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 
-Start-Process C:\VSonline\vso.exe  -ArgumentList $args -RedirectStandardOutput .\uninstall.txt -WindowStyle Hidden -RedirectStandardInput .\input.txt
+Start-Process C:\VSonline\vso.exe  -ArgumentList $args -RedirectStandardOutput .\uninstall.txt -WindowStyle Hidden -RedirectStandardInput .\input.txt -RedirectStandardOutput $outfilename
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
