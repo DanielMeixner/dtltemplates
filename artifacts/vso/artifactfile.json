@@ -11,27 +11,32 @@
     "mail": {
       "type": "string",
       "displayName": "mail",
+      "defaultValue":"daniel.meixner@microsoft.com",
       "description": "Email address where code is sent to."
     },
     "resourcegroup": {
       "type": "string",
       "displayName": "resourcegroup",
-      "description": "Resource Group of VSO plan"
+      "description": "Resource Group of VSO plan",
+      "defaultValue": "vso-rg-1d9890a"
     },
     "subscriptionid": {
       "type": "string",
       "displayName": "subscriptionid",
-      "description": "Subscription ID"
+      "description": "Subscription ID",
+      "defaultValue": ""
     },
     "planname": {
       "type": "string",
       "displayName": "planname",
-      "description": "Name of VSO Plan"
+      "description": "Name of VSO Plan",
+      "defaultValue": "vso-plan-westeurope-2"
     },
     "user": {
       "type": "string",
       "displayName": "user",
-      "description": "Username"
+      "description": "Username",
+      "defaultValue": "danmeix"
     },
     "password": {
       "type": "securestring",
