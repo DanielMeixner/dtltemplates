@@ -59,6 +59,8 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 
 $credential = New-Object System.Management.Automation.PSCredential $user, $password
 
+Write-Host "USER" + $user
+Write-Host "PW" + $password
 
 Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt -Credential $credential
  
