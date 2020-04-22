@@ -16,6 +16,6 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass ./ùninstall.ps1 ' ) ]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass ./uninstall.ps1 ' ) ]"
   }
 }
