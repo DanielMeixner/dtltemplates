@@ -1,16 +1,24 @@
 [CmdletBinding()]
 param(
-    # Space-, comma- or semicolon-separated list of Chocolatey packages.
+    # .
     [string] $mail,
 
-    # Boolean indicating if we should allow empty checksums. Default to true to match previous artifact functionality despite security
+    # 
     [string] $resourcegroup = "no-rg",
 
-    # Boolean indicating if we should ignore checksums. Default to false for security
+    # 
     [string] $subscriptionid = "no-subscription-id",
     
+    # 
+    [string] $planname = "no-plan-name",
+
+    # 
+    [string] $user = "no-user",
+
     # Minimum PowerShell version required to execute this script.
-    [string] $planname = "no-plan-name"
+    [SecureString] $password = "no-pw"
+
+    
 )
 
 
