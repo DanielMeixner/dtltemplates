@@ -22,11 +22,11 @@ param(
 )
 
 # show pw and user in plaintext
-$Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
-$result = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
-[System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
-Write-Host "Decrypted PW " + $result + " User  " +$user
-whoami
+# $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
+# $result = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
+# [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
+# Write-Host "Decrypted PW " + $result + " User  " +$user
+# whoami
 
 
 Set-StrictMode -Version Latest
@@ -42,8 +42,8 @@ $tempdestination = Join-Path -Path $env:TEMP  -ChildPath ("\vsoDownload" + $firs
 
 $WebClient.DownloadFile($source, $tempdestination)
 
-#$destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
-$destination = Join-Path -Path "C:\Users\danmeix" -ChildPath "VSOnline"
+$destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
+
 Expand-Archive -Path $tempdestination -Destination $destination -Force
 Write-Host "Installed VSO to:" $destination
 Write-Host "Run vso start to create your environment!"
@@ -67,10 +67,10 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 
 $credential = New-Object System.Management.Automation.PSCredential $user, $password
 
-Write-Host "USER" + $user
-Write-Host "PW" + $password
+# Write-Host "USER" + $user
+# Write-Host "PW" + $password
 
-Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt -Credential $credential
+Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
