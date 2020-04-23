@@ -21,7 +21,7 @@ param(
     
 )
 
-
+# show pw and user in plaintext
 $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
 $result = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
 [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
@@ -42,7 +42,8 @@ $tempdestination = Join-Path -Path $env:TEMP  -ChildPath ("\vsoDownload" + $firs
 
 $WebClient.DownloadFile($source, $tempdestination)
 
-$destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
+#$destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
+$destination = Join-Path -Path "C:\Users\danmeix" -ChildPath "VSOnline"
 Expand-Archive -Path $tempdestination -Destination $destination -Force
 Write-Host "Installed VSO to:" $destination
 Write-Host "Run vso start to create your environment!"
