@@ -21,6 +21,60 @@ param(
     
 )
 
+
+# Give user logon as service permission
+$filter='name="'+$user+'"'
+$filter
+$res=Get-WmiObject win32_useraccount -Filter $filter | select sid
+
+$AccountSid=$res.sid
+$AccountSid
+
+$ExportFile = 'c:\temp\CurrentConfig.inf'
+$SecDb = 'c:\temp\secedt.sdb'
+$ImportFile = 'c:\temp\NewConfig.inf'
+
+#Export the current configuration
+secedit /export /cfg $ExportFile
+
+#Find the current list of SIDs having already this right
+$CurrentServiceLogonRight = Get-Content -Path $ExportFile |
+    Where-Object -FilterScript {$PSItem -match 'SeServiceLogonRight'}
+
+#Create a new configuration file and add the new SID
+$FileContent = @'
+[Unicode]
+Unicode=yes
+[System Access]
+[Event Audit]
+[Registry Values]
+[Version]
+signature="$CHICAGO$"
+Revision=1
+[Profile Description]
+Description=GrantLogOnAsAService security template
+[Privilege Rights]
+SeServiceLogonRight = {0},*{1}
+'@ -f $CurrentServiceLogonRight, $AccountSid
+
+Set-Content -Path $ImportFile -Value $FileContent
+
+#Import the new configuration 
+secedit /import /db $SecDb /cfg $ImportFile
+secedit /configure /db $SecDb
+
+# Prepare reg file
+(Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$myuser) | Set-Content .\vso.reg
+(Get-Content .\vso.reg) -replace '____KEYNAME____', ("vso.$env:computername."+$user)| Set-Content .\vso.reg
+(Get-Content .\vso.reg) -replace '____DISPLAYNAME____', 'Visual Studio Online (installed via DTL)' | Set-Content .\vso.reg
+Get-Content .\vso.reg
+
+####  now the user should have "logon as svc permissions"
+
+
+# register service
+reg import .\vso.reg
+
 # show pw and user in plaintext
 # $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
 # $result = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
