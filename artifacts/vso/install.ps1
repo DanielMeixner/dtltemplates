@@ -64,7 +64,7 @@ secedit /import /db $SecDb /cfg $ImportFile
 secedit /configure /db $SecDb
 
 # Prepare reg file
-(Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$myuser) | Set-Content .\vso.reg
+(Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$user) | Set-Content .\vso.reg
 (Get-Content .\vso.reg) -replace '____KEYNAME____', ("vso.$env:computername."+$user)| Set-Content .\vso.reg
 (Get-Content .\vso.reg) -replace '____DISPLAYNAME____', 'Visual Studio Online (installed via DTL)' | Set-Content .\vso.reg
 Get-Content .\vso.reg
@@ -110,7 +110,7 @@ Write-Host "GUID" + $guid
 $outfilename = ".\out" + $guid + ".txt"
 Write-Host $outfilename
 
-$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $guid
+$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid
 
 Write-Host "argslist: " + $args
 
@@ -119,7 +119,7 @@ Write-Host "argslist: " + $args
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 
 
-$credential = New-Object System.Management.Automation.PSCredential $user, $password
+#$credential = New-Object System.Management.Automation.PSCredential $user, $password
 
 # Write-Host "USER" + $user
 # Write-Host "PW" + $password
