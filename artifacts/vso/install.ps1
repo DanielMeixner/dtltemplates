@@ -30,9 +30,9 @@ $res=Get-WmiObject win32_useraccount -Filter $filter | select sid
 $AccountSid=$res.sid
 $AccountSid
 
-$ExportFile = 'c:\temp\CurrentConfig.inf'
-$SecDb = 'c:\temp\secedt.sdb'
-$ImportFile = 'c:\temp\NewConfig.inf'
+$ExportFile = 'c:\CurrentConfig.inf'
+$SecDb = 'c:\secedt.sdb'
+$ImportFile = 'c:\NewConfig.inf'
 
 #Export the current configuration
 secedit /export /cfg $ExportFile
