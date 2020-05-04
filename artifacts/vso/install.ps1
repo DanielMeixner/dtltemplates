@@ -63,17 +63,20 @@ Set-Content -Path $ImportFile -Value $FileContent
 secedit /import /db $SecDb /cfg $ImportFile
 secedit /configure /db $SecDb
 
-# Prepare reg file
-(Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$user) | Set-Content .\vso.reg
-(Get-Content .\vso.reg) -replace '____KEYNAME____', ("vso.$env:computername."+$user)| Set-Content .\vso.reg
-(Get-Content .\vso.reg) -replace '____DISPLAYNAME____', 'Visual Studio Online (installed via DTL)' | Set-Content .\vso.reg
-Get-Content .\vso.reg
-
 ####  now the user should have "logon as svc permissions"
 
 
-# register service
-reg import .\vso.reg
+##### register vso service
+sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$password start=auto
+
+# Prepare reg file
+# (Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$user) | Set-Content .\vso.reg
+# (Get-Content .\vso.reg) -replace '____KEYNAME____', ("vso.$env:computername."+$user)| Set-Content .\vso.reg
+# (Get-Content .\vso.reg) -replace '____DISPLAYNAME____', 'Visual Studio Online (installed via DTL)' | Set-Content .\vso.reg
+# Get-Content .\vso.reg
+
+# # register service
+# reg import .\vso.reg
 
 # show pw and user in plaintext
 # $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
