@@ -22,7 +22,7 @@ param(
 )
 
 
-# Give user logon as service permission
+####### Give user logon as service permission
 $filter='name="'+$user+'"'
 $filter
 $res=Get-WmiObject win32_useraccount -Filter $filter | select sid
@@ -66,8 +66,7 @@ secedit /configure /db $SecDb
 ####  now the user should have "logon as svc permissions"
 
 
-##### register vso service
-sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$password start=auto
+
 
 # Prepare reg file
 # (Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$user) | Set-Content .\vso.reg
@@ -79,11 +78,11 @@ sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$us
 # reg import .\vso.reg
 
 # show pw and user in plaintext
-# $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
-# $result = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
-# [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
-# Write-Host "Decrypted PW " + $result + " User  " +$user
-# whoami
+$Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
+$decryptedpw = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
+[System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
+Write-Host "Decrypted PW: " + $decryptedpw + " User:  " +$user
+whoami
 
 
 Set-StrictMode -Version Latest
@@ -113,7 +112,7 @@ Write-Host "GUID" + $guid
 $outfilename = ".\out" + $guid + ".txt"
 Write-Host $outfilename
 
-$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid
+$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid + " --service "
 
 Write-Host "argslist: " + $args
 
@@ -124,8 +123,8 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 
 #$credential = New-Object System.Management.Automation.PSCredential $user, $password
 
-# Write-Host "USER" + $user
-# Write-Host "PW" + $password
+Write-Host "USER" + $user
+Write-Host "PW" + $password
 
 Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
  
@@ -142,5 +141,9 @@ $params = @{
 }
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
 Write-Host "sended"
+
+##### register vso service
+Start-Sleep 60
+sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
 
  
