@@ -159,12 +159,6 @@ $vsofolder="C:\Users\$user\.vsonline\"
 if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
 Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
-### create computername dir and copy file to it
-$computernamedir="C:\Users\$user.($env:computername)\"
-New-Item $computernamedir -Type Directory
-Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
-
-
 ### replace user
 $file= "C:\Users\$user\.vsonline\selfHosted.json"
 $regex = '("runAsUser)[^.]*'
@@ -178,8 +172,13 @@ $regexws = '("workspacePath)[^,]*'
 
 Write-Host ".vsonline - modified"
 Get-Content $file
-Write-Host "dtl - original file"
-Get-Content $dtlfolder"selfHosted.json"
+# Write-Host "dtl - original file"
+# Get-Content $dtlfolder"selfHosted.json"
+
+### create computername dir and copy file to it
+$computernamedir="C:\Users\$user.$env:computername\"
+New-Item $computernamedir -Type Directory
+Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
 ##### register vso service
 sc.exe create "vso.$env:computername.$user"  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
