@@ -153,10 +153,6 @@ $dtlfolder="C:\Users\$user\.dtl\"
 if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
 Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
-### kill process 
-$proc=Get-Process vso
-$proc.kill()
-Write-Host "process killed"
 
 ### copy file back to user dir
 $vsofolder="C:\Users\$user\.vsonline\"
@@ -183,5 +179,9 @@ sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$us
 Write-Host "service running"
 
 
+# ### kill process 
+# $proc=Get-Process vso
+# $proc.kill()
+# Write-Host "process killed"
 
 
