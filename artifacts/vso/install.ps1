@@ -160,7 +160,7 @@ if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
 Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
 ### replace user
-$file= C:\Users\$user\.vsonline\selfHosted.json
+$file= "C:\Users\$user\.vsonline\selfHosted.json"
 $regex = '("runAsUser)[^.]*'
 (Get-Content $file) -replace $regex, ('"runAsUser"' + ":" + '"'+".\\$user" + '",')  | Set-Content $file
 
@@ -170,7 +170,7 @@ $regexws = '("workspacePath)[^,]*'
 (Get-Content $file) -replace $regexws, ('"workspacePath"' + ":" + '"'+"C:\\Users\\$user\\Documents" + '"')  | Set-Content $file
 
 Write-Host ".vsonline - modified"
-Get-Content C:\Users\$user\.vsonline\selfHosted.json
+Get-Content $file
 Wite-Host "dtl - original file"
 Get-Content $dtlfolder"selfHosted.json"
 
