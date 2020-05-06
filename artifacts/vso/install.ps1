@@ -146,7 +146,7 @@ Write-Host "sended"
 ### wait for selfhosted file
 $selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
 
-while (!(Test-Path "C:\Users\$user\.vsonline\selfHosted.json" )) { Start-Sleep 10 }
+while (!(Test-Path $selfhostedfilepath )) { Start-Sleep 10 }
 
 ### create copy of file
 $dtlfolder="C:\Users\$user\.dtl\"
