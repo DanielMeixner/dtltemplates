@@ -146,9 +146,7 @@ Write-Host "sended"
 # dirty: should wait for selfhosted.json file here.
 Start-Sleep 120
 ### kill vso process ###
-$proc=Get-Process vso
-$proc.kill()
-Write-Host "process killed"
+
 
 
 
@@ -157,4 +155,9 @@ Write-Host "process killed"
 sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
 
 Get-Content C:\Users\$user\.vsonline\selfHosted.json
- 
+
+$proc=Get-Process vso
+$proc.kill()
+Write-Host "process killed"
+
+Get-Content C:\Users\$user\.vsonline\selfHosted.json
