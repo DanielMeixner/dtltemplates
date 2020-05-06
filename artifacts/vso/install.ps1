@@ -180,8 +180,8 @@ Write-Host "service running"
 
 
 # ### kill process 
-# $proc=Get-Process vso
-# $proc.kill()
-# Write-Host "process killed"
+$proc=Get-Process vso
+$proc.kill()
+Write-Host "process killed"
 
 
