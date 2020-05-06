@@ -130,6 +130,7 @@ Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
+while (!(Test-Path $outfilename )) { Start-Sleep 10 }
 
 $res = Get-Content $outfilename
  
@@ -142,22 +143,31 @@ $params = @{
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
 Write-Host "sended"
 
+### wait for selfhosted file
+$selfhostedfilepath="C:\Users\$user\.vsonline\selfHosted.json"
+while (!(Test-Path "C:\Users\$user\.vsonline\selfHosted.json" )) { Start-Sleep 10 }
 
-# dirty: should wait for selfhosted.json file here.
-Start-Sleep 120
-### kill vso process ###
+### create copy of file
+$dtlfolder="C:\Users\$user\.dtl\"
+if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
+Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
-
-
-
-##### register vso service
-
-sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
-
-Get-Content C:\Users\$user\.vsonline\selfHosted.json
-
+### kill process 
 $proc=Get-Process vso
 $proc.kill()
 Write-Host "process killed"
 
+### copy file back
+$vsofolder="C:\Users\$user\.vsonline\"
+if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
+Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+
 Get-Content C:\Users\$user\.vsonline\selfHosted.json
+
+##### register vso service
+sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
+Write-Host "service running"
+
+
+
+
