@@ -163,9 +163,19 @@ $vsofolder="C:\Users\$user\.vsonline\"
 if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
 Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
-Write-Host ".vsonline"
+### replace user
+$file= C:\Users\$user\.vsonline\selfHosted.json
+$regex = '("runAsUser)[^.]*'
+(Get-Content $file) -replace $regex, ('"runAsUser"' + ":" + '"'+".\\$user" + '",')  | Set-Content $file
+
+
+### replace workpath
+$regexws = '("workspacePath)[^,]*'
+(Get-Content $file) -replace $regexws, ('"workspacePath"' + ":" + '"'+"C:\\Users\\$user\\Documents" + '"')  | Set-Content $file
+
+Write-Host ".vsonline - modified"
 Get-Content C:\Users\$user\.vsonline\selfHosted.json
-Wite-Host "dtl"
+Wite-Host "dtl - original file"
 Get-Content $dtlfolder"selfHosted.json"
 
 ##### register vso service
