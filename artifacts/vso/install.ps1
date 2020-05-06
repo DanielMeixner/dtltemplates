@@ -182,7 +182,7 @@ Write-Host "dtl - original file"
 Get-Content $dtlfolder"selfHosted.json"
 
 ##### register vso service
-sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
+sc.exe create "vso.$env:computername.$user"  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
 Write-Host "service running"
 
 
