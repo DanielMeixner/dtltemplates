@@ -144,7 +144,8 @@ Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Jso
 Write-Host "sended"
 
 ### wait for selfhosted file
-$selfhostedfilepath="C:\Users\$user\.vsonline\selfHosted.json"
+$selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
+
 while (!(Test-Path "C:\Users\$user\.vsonline\selfHosted.json" )) { Start-Sleep 10 }
 
 ### create copy of file
@@ -153,14 +154,14 @@ if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
 Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
 ### kill process 
-# $proc=Get-Process vso
-# $proc.kill()
-# Write-Host "process killed"
+$proc=Get-Process vso
+$proc.kill()
+Write-Host "process killed"
 
-### copy file back
-# $vsofolder="C:\Users\$user\.vsonline\"
-# if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
-# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+### copy file back to user dir
+$vsofolder="C:\Users\$user\.vsonline\"
+if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
+Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
 Write-Host ".vsonline"
 Get-Content C:\Users\$user\.vsonline\selfHosted.json
