@@ -142,14 +142,19 @@ $params = @{
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
 Write-Host "sended"
 
+
+# dirty: should wait for selfhosted.json file here.
 Start-Sleep 120
 ### kill vso process ###
 $proc=Get-Process vso
 $proc.kill()
 Write-Host "process killed"
 
+
+
 ##### register vso service
 
 sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
 
+Get-Content C:\Users\$user\.vsonline\selfHosted.json
  
