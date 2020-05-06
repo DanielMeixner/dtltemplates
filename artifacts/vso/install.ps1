@@ -153,16 +153,19 @@ if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
 Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
 ### kill process 
-$proc=Get-Process vso
-$proc.kill()
-Write-Host "process killed"
+# $proc=Get-Process vso
+# $proc.kill()
+# Write-Host "process killed"
 
 ### copy file back
-$vsofolder="C:\Users\$user\.vsonline\"
-if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
-Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+# $vsofolder="C:\Users\$user\.vsonline\"
+# if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
+# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
+Write-Host ".vsonline"
 Get-Content C:\Users\$user\.vsonline\selfHosted.json
+Wite-Host "dtl"
+Get-Content $dtlfolder"selfHosted.json"
 
 ##### register vso service
 sc.exe create VSOService  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
