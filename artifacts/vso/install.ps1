@@ -171,7 +171,7 @@ $regexws = '("workspacePath)[^,]*'
 
 Write-Host ".vsonline - modified"
 Get-Content $file
-Wite-Host "dtl - original file"
+Write-Host "dtl - original file"
 Get-Content $dtlfolder"selfHosted.json"
 
 ##### register vso service
