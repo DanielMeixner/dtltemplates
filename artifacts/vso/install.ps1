@@ -112,9 +112,9 @@ Write-Host "GUID" + $guid
 $outfilename = ".\out" + $guid + ".txt"
 Write-Host $outfilename
 
-$args = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid 
+$vsoargs = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid 
 
-Write-Host "argslist: " + $args
+Write-Host "argslist: " + $vsoargs
 
 
 ### register for vso; vso start --service ...
@@ -126,16 +126,23 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 Write-Host "USER" + $user
 Write-Host "PW" + $password
 
-Start-Process $runpath  -ArgumentList $args -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
+### execute vso 
+Start-Process $runpath  -ArgumentList $vsoargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
+
+### psexec
+$psexecpath =".\PsExec.exe"
+$workdir = "C:\Users\$user\vso\"
+$psexecargs =" -w $workdir -u $user -p $decryptedpw $runpath $vsoargs "
+if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
+Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
  
 # dirty for now - later wait for file being created and filled.
 Start-Sleep 5
 while (!(Test-Path $outfilename )) { Start-Sleep 10 }
-
 $res = Get-Content $outfilename
  
 Write-Host "res:"+$res
-    
+   
 $params = @{    
     mail    = $mail + ''
     message = $res + ''
@@ -143,46 +150,50 @@ $params = @{
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
 Write-Host "sended"
 
-### wait for selfhosted file
-$selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
-
-while (!(Test-Path $selfhostedfilepath )) { Start-Sleep 10 }
-
-### create copy of file
-$dtlfolder="C:\Users\$user\.dtl\"
-if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
-Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
 
-### copy file back to user dir
-$vsofolder="C:\Users\$user\.vsonline\"
-if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
-Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+# ### wait for selfhosted file
+# $selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
 
-### replace user
-$file= "C:\Users\$user\.vsonline\selfHosted.json"
-$regex = '("runAsUser)[^.]*'
-(Get-Content $file) -replace $regex, ('"runAsUser"' + ":" + '"'+".\\$user" + '",')  | Set-Content $file
+# while (!(Test-Path $selfhostedfilepath )) { Start-Sleep 10 }
+
+# ### create copy of file
+# $dtlfolder="C:\Users\$user\.dtl\"
+# if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
+# Copy-Item -Path  $selfhostedfilepath $dtlfolder
 
 
-### replace workpath
-New-Item "C:\\Users\\$user\\vso" -Type Directory
-$regexws = '("workspacePath)[^,]*'
-(Get-Content $file) -replace $regexws, ('"workspacePath"' + ":" + '"'+"C:\\Users\\$user\\vso" + '"')  | Set-Content $file
+# ### copy file back to user dir
+# $vsofolder="C:\Users\$user\.vsonline\"
+# if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
+# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
-Write-Host ".vsonline - modified"
-Get-Content $file
-# Write-Host "dtl - original file"
-# Get-Content $dtlfolder"selfHosted.json"
+# ### replace user
+# $file= "C:\Users\$user\.vsonline\selfHosted.json"
+# $regex = '("runAsUser)[^.]*'
+# (Get-Content $file) -replace $regex, ('"runAsUser"' + ":" + '"'+".\\$user" + '",')  | Set-Content $file
 
-### create computername dir and copy file to it
-$computernamedir="C:\Users\$user.$env:computername\"
-New-Item $computernamedir -Type Directory
-Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+# ### replace workpath
+# New-Item "C:\\Users\\$user\\vso" -Type Directory
+# $regexws = '("workspacePath)[^,]*'
+# (Get-Content $file) -replace $regexws, ('"workspacePath"' + ":" + '"'+"C:\\Users\\$user\\vso" + '"')  | Set-Content $file
+
+# Write-Host ".vsonline - modified"
+# Get-Content $file
+# # Write-Host "dtl - original file"
+# # Get-Content $dtlfolder"selfHosted.json"
+
+# ### create computername dir and copy file to it
+# $computernamedir="C:\Users\$user.$env:computername\"
+# New-Item $computernamedir -Type Directory
+# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
+
+
+
 
 ##### register vso service
 sc.exe create "vso.$env:computername.$user"  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
-Write-Host "service running"
+Write-Host "service created"
 
 
 # ### kill process 
