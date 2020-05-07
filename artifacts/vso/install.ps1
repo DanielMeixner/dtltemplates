@@ -132,7 +132,7 @@ Write-Host "PW" + $password
 ### psexec
 $psexecpath =".\PsExec.exe"
 $workdir = "C:\Users\$user\vso\"
-$psexecargs =" -w $workdir -u $user -p $decryptedpw $runpath $vsoargs "
+$psexecargs =" -w $workdir -u $user -p $decryptedpw -accepteula $runpath $vsoargs "
 if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
 Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
  
