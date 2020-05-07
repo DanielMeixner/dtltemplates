@@ -134,6 +134,7 @@ $psexecpath =".\PsExec.exe"
 $workdir = "C:\Users\$user\vso\"
 $psexecargs =" -w $workdir -u $user -p $decryptedpw -accepteula $runpath $vsoargs "
 if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
+Write-Host $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
 Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
  
 # dirty for now - later wait for file being created and filled.
