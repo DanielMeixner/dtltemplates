@@ -127,7 +127,7 @@ Write-Host "USER" + $user
 Write-Host "PW" + $password
 
 ### execute vso 
-Start-Process $runpath  -ArgumentList $vsoargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
+# Start-Process $runpath  -ArgumentList $vsoargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
 
 ### psexec
 $psexecpath =".\PsExec.exe"
