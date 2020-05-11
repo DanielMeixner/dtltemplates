@@ -106,7 +106,7 @@ Write-Host "Run vso start to create your environment!"
 $runpath = $destination + "\vso.exe"
 
 
-$authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f06675f48646998a91d97a55a56235/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50KJExnmWKyTiN5WwT1X8o6ekd7KAOZwqboO-VWdZig"
+
 $guid = New-Guid
 Write-Host "GUID" + $guid
 $outfilename = ".\out" + $guid + ".txt"
@@ -130,27 +130,23 @@ Write-Host "PW" + $password
 # Start-Process $runpath  -ArgumentList $vsoargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
 
 ### psexec
-$psexecpath =".\PsExec.exe"
-$workdir = "C:\Users\$user\vso\"
-$psexecargs =" -w $workdir -u $user -p $decryptedpw -accepteula $runpath $vsoargs "
-if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
-Write-Host $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
-Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
+# $psexecpath =".\PsExec.exe"
+# $workdir = "C:\Users\$user\vso\"
+# $psexecargs =" -w $workdir -u $user -p $decryptedpw -accepteula $runpath $vsoargs "
+# if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
+# Write-Host $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
+# Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
  
-# dirty for now - later wait for file being created and filled.
-Start-Sleep 5
-while (!(Test-Path $outfilename )) { Start-Sleep 10 }
-$res = Get-Content $outfilename
- 
-Write-Host "res:"+$res
-   
-$params = @{    
-    mail    = $mail + ''
-    message = $res + ''
-}
-Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
-Write-Host "sended"
 
+
+$psexecOutputFile= "c:\vso_$guid_.txt"
+### Start file watcher in background waiting for file. 
+Start-Process powershell  -ArgumentList ".\watcher.ps1","-mail","daniel", "-filename", "$psexecOutputFile", "-user", "$user", "-password", "$decryptedpw"
+
+### Start PSExec in Forground and write to file
+### vso will do the registration but not as service
+### file watcher will wait for the registration to complete, create a service and kill the vso proc
+.\psexec \\127.0.0.1  "C:\VSOnline\vso.exe" "start" "-k" "-p $decryptedpw" "-u $user" > $psexecOutputFile
 
 
 # ### wait for selfhosted file
@@ -192,14 +188,6 @@ Write-Host "sended"
 
 
 
-##### register vso service
-sc.exe create "vso.$env:computername.$user"  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
-Write-Host "service created"
 
-
-# ### kill process 
-$proc=Get-Process vso
-$proc.kill()
-Write-Host "process killed"
 
 
