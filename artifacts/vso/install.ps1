@@ -144,8 +144,8 @@ Start-Process powershell  -ArgumentList ".\watcher.ps1","-mail","daniel", "-file
 ### Start PSExec in Forground and write to file
 ### vso will do the registration but not as service
 ### file watcher will wait for the registration to complete, create a service and kill the vso proc
-.\psexec \\127.0.0.1  $runpath "start" "-k" "-p" "$decryptedpw" "-u" "$user" "-accepteula"> $psexecOutputFile
 
+.\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" > $psexecOutputFile
 
 # ### wait for selfhosted file
 # $selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
