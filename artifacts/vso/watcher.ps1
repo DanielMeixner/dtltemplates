@@ -12,7 +12,7 @@ param(
     [string] $outfilename
 )
 
-
+Write-Host "Start watcher"
 $authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f06675f48646998a91d97a55a56235/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50KJExnmWKyTiN5WwT1X8o6ekd7KAOZwqboO-VWdZig"
 
 ### wait for file to exist
