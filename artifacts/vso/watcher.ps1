@@ -12,19 +12,20 @@ param(
     [string] $filename
 )
 
-Write-Host "Start watcher"
+Write-Host "Start watcher for file $filename" 
 $authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f06675f48646998a91d97a55a56235/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50KJExnmWKyTiN5WwT1X8o6ekd7KAOZwqboO-VWdZig"
 
 ### wait for file to exist
 Start-Sleep 5
-while (!(Test-Path $filename )) { Start-Sleep 10 }
+while (!(Test-Path $filename )) { Start-Sleep 10; Write-Host "Waiting for file $filename"; }
 
 ### Post file content to relay logic app
 
 ### wait for file to contain "to sign in... "
 while(!((Get-Content $filename |  Select-String "sign in" ) -ne $null ))
 {
-     Write-Host "Nope"; 
+     Write-Host "Didn't find string"; 
+     Get-Content $filename
      Start-Sleep 3;
 }
 
@@ -34,6 +35,7 @@ $params = @{
     mail    = $mail + ''
     message = $res + ''
 }
+Write-Host "Start web Request"
 Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
 Write-Host "sended"
 

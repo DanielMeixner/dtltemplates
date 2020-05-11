@@ -139,7 +139,9 @@ Write-Host "PW" + $password
 
 $psexecOutputFile= "c:\vso_out_.txt"
 ### Start file watcher in background waiting for file. 
-Start-Process powershell -RedirectStandardOutput "c:\watcherout.txt"  -ArgumentList ".\watcher.ps1","-mail","$mail", "-filename", "$psexecOutputFile", "-user", "$user", "-password", "$decryptedpw"
+# Start-Process powershell -RedirectStandardOutput  "c:\watcherout.txt"  -ArgumentList ".\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw -ExecutionPolicy bypass"
+
+Start-Process  powershell  -RedirectStandardOutput  "c:\watcherout.txt"  -ArgumentList "-ExecutionPolicy Bypass -File .\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw "
 
 ### Start PSExec in Forground and write to file
 ### vso will do the registration but not as service
