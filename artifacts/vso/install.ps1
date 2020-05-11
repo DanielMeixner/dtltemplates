@@ -85,6 +85,7 @@ Write-Host "Decrypted PW: " + $decryptedpw + " User:  " +$user
 whoami
 
 
+### download vso installer
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
@@ -94,15 +95,12 @@ $source = "https://vsoagentdownloads.blob.core.windows.net/vsoagent/VSOAgent_win
 $webClient = New-Object System.Net.WebClient
 $firstLetters = (New-Guid).ToString().SubString(0, 4)
 $tempdestination = Join-Path -Path $env:TEMP  -ChildPath ("\vsoDownload" + $firstLetters + ".zip")
-
-
 $WebClient.DownloadFile($source, $tempdestination)
-
 $destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
-
 Expand-Archive -Path $tempdestination -Destination $destination -Force
 Write-Host "Installed VSO to:" $destination
 Write-Host "Run vso start to create your environment!"
+
 $runpath = $destination + "\vso.exe"
 
 
@@ -146,7 +144,7 @@ Start-Process powershell  -ArgumentList ".\watcher.ps1","-mail","daniel", "-file
 ### Start PSExec in Forground and write to file
 ### vso will do the registration but not as service
 ### file watcher will wait for the registration to complete, create a service and kill the vso proc
-.\psexec \\127.0.0.1  "C:\VSOnline\vso.exe" "start" "-k" "-p" "$decryptedpw" "-u" "$user" > $psexecOutputFile
+.\psexec \\127.0.0.1  $runpath "start" "-k" "-p" "$decryptedpw" "-u" "$user" > $psexecOutputFile
 
 
 # ### wait for selfhosted file
