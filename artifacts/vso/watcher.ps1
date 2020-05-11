@@ -9,7 +9,7 @@ param(
     # 
     [string] $user = "no-user",
     
-    [string] $outfilename
+    [string] $filename
 )
 
 Write-Host "Start watcher"
@@ -17,18 +17,18 @@ $authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f066
 
 ### wait for file to exist
 Start-Sleep 5
-while (!(Test-Path $outfilename )) { Start-Sleep 10 }
+while (!(Test-Path $filename )) { Start-Sleep 10 }
 
 ### Post file content to relay logic app
 
 ### wait for file to contain "to sign in... "
-while(!((Get-Content $outfilename |  Select-String "sign in" ) -ne $null ))
+while(!((Get-Content $filename |  Select-String "sign in" ) -ne $null ))
 {
      Write-Host "Nope"; 
      Start-Sleep 3;
 }
 
-$res = Get-Content $outfilename
+$res = Get-Content $filename
 Write-Host "res:"+$res   
 $params = @{    
     mail    = $mail + ''
