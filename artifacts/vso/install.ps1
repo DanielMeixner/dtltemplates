@@ -86,20 +86,20 @@ whoami
 
 
 ### download vso installer
-# Set-StrictMode -Version Latest
-# $ErrorActionPreference = "Stop"
-# $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+$PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
 
-# Import-Module -Name "Microsoft.PowerShell.Archive"
-# $source = "https://vsoagentdownloads.blob.core.windows.net/vsoagent/VSOAgent_win_3633968.zip"
-# $webClient = New-Object System.Net.WebClient
-# $firstLetters = (New-Guid).ToString().SubString(0, 4)
-# $tempdestination = Join-Path -Path $env:TEMP  -ChildPath ("\vsoDownload" + $firstLetters + ".zip")
-# $WebClient.DownloadFile($source, $tempdestination)
-# $destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
-# Expand-Archive -Path $tempdestination -Destination $destination -Force
-# Write-Host "Installed VSO to:" $destination
-# Write-Host "Run vso start to create your environment!"
+Import-Module -Name "Microsoft.PowerShell.Archive"
+$source = "https://vsoagentdownloads.blob.core.windows.net/vsoagent/VSOAgent_win_3633968.zip"
+$webClient = New-Object System.Net.WebClient
+$firstLetters = (New-Guid).ToString().SubString(0, 4)
+$tempdestination = Join-Path -Path $env:TEMP  -ChildPath ("\vsoDownload" + $firstLetters + ".zip")
+$WebClient.DownloadFile($source, $tempdestination)
+$destination = Join-Path -Path $env:SystemDrive -ChildPath "VSOnline"
+Expand-Archive -Path $tempdestination -Destination $destination -Force
+Write-Host "Installed VSO to:" $destination
+Write-Host "Run vso start to create your environment!"
 
 $runpath = $destination + "\vso.exe"
 
