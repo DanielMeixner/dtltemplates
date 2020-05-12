@@ -148,7 +148,8 @@ Start-Process  powershell  -RedirectStandardOutput  "c:\watcherout.txt"  -Argume
 ### file watcher will wait for the registration to complete, create a service and kill the vso proc
 # Write-Host "PSEXEC" "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "-r"  $resourcegroup  "-s"  $subscriptionid  "--plan-name" $planname   "-n"  "DTL_" $env:computername "_"+ $guid > $psexecOutputFile
 Write-Host "PSEXEC" "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n"  "DTL_" > $psexecOutputFile
-.\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n"  "DTL_" > $psexecOutputFile
+$machinename= "DTL_$env:computername_$guid"
+.\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n" $machinename  > $psexecOutputFile
 
 # ### wait for selfhosted file
 # $selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
