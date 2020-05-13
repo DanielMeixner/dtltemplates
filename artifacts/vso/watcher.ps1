@@ -42,8 +42,12 @@ Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Jso
 Write-Host "Posted to service."
 
 ### now wait for some additional time to make sure registration is completed by vso.exe running as a process already.
-$seflhostedfilepath = "C:\Users\$user\.vsonline\selfHosted.json"
-while (!(Test-Path $seflhostedfilepath )) { Start-Sleep 10; Write-Host "Waiting for file $seflhostedfilepath"; }
+while(!((Get-Content $filename |  Select-String "All done" ) -ne $null ))
+{
+     Write-Host "Waiting for registration to complete ..."; 
+     Get-Content $filename
+     Start-Sleep 3;
+}
 
 
 #### register vso service
