@@ -11,37 +11,37 @@
     "mail": {
       "type": "string",
       "displayName": "mail",
-      "defaultValue": "daniel.meixner@microsoft.com",
-      "description": "Email address where code is sent to."
+      "defaultValue": "",
+      "description": "Email address where VS Codespaces activation code is send to. "
     },
     "subscriptionid": {
       "type": "string",
       "displayName": "subscriptionid",
-      "description": "Subscription ID which holds the VSO Plan.",
+      "description": "Azure Subscription ID which holds the VSO plan. E.g. xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
       "defaultValue": ""
     },
     "resourcegroup": {
       "type": "string",
       "displayName": "resourcegroup",
-      "description": "Resource Group of VSO plan",
-      "defaultValue": "vso-rg-1d9890a"
+      "description": "Azure Resource Group of VSO plan. Check your Azure Subscription to find the correct value. If you don't have a plan yet create one on https://online.visualstudio.com .  E.g. vso-plan-123456",
+      "defaultValue": ""
     },
     "planname": {
       "type": "string",
       "displayName": "planname",
-      "description": "Name of VSO Plan.",
-      "defaultValue": "vso-plan-westeurope-2"
+      "description": "Name of VSO Plan. Check your Azure Subscription to find the correct value. If you don't have a plan yet create one on https://online.visualstudio.com . E.g. vso-plan-westeurope",
+      "defaultValue": ""
     },
     "user": {
       "type": "string",
       "displayName": "user",
-      "description": "Username. User be available on machine. A service will be registerd running with this account.",
-      "defaultValue": "daniel"
+      "description": "Username. User must be available on machine. You can user the user you specified during creation here. A windows service will be registerd running with this account. E.g. Daniel ",
+      "defaultValue": ""
     },
     "password": {
       "type": "securestring",
       "displayName": "password",
-      "description": "PW on machine"
+      "description": "Password of user on this machine."
     }
   },
   "runCommand": {
