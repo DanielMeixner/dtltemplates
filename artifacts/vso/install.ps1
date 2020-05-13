@@ -104,6 +104,12 @@ $psexecOutputFile= "c:\vso_out_$guid.txt"
 ### Start file watcher in background waiting for file. 
 Start-Process  powershell  -RedirectStandardOutput  "c:\watcher_out_$guid.txt"  -ArgumentList "-ExecutionPolicy Bypass -File .\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw -authrelayurl $authrelayurl"
 
+### download PSExec
+$pstoolszippath=".\PSTools.zip"
+wget https://download.sysinternals.com/files/PSTools.zip -OutFile $pstoolszippath
+Expand-Archive -Path $pstoolszippath -DestinationPath .
+
+
 ### Start PSExec in Forground and write output to file.
 ### -k makes sure that no questions will be asked
 ### vso will do the registration but will be running as process not as service-
