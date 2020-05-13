@@ -114,7 +114,7 @@ Expand-Archive -Path $pstoolszippath -DestinationPath .
 ### -k makes sure that no questions will be asked
 ### vso will do the registration but will be running as process not as service-
 ### File watcher will wait for the registration to complete, create a service and kill the vso proc.
-$machinename= "DTL_$env:computername_$guid"
+$machinename= "DTL_$env:computername.$guid"
 .\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" $vsoexepath "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n" $machinename  > $psexecOutputFile
 
 
