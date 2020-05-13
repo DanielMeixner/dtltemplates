@@ -106,7 +106,7 @@ Start-Process  powershell  -RedirectStandardOutput  "c:\watcher_out_$guid.txt"  
 
 ### download PSExec
 $pstoolszippath=".\PSTools.zip"
-wget https://download.sysinternals.com/files/PSTools.zip -OutFile $pstoolszippath
+Invoke-WebRequest https://download.sysinternals.com/files/PSTools.zip -OutFile $pstoolszippath
 Expand-Archive -Path $pstoolszippath -DestinationPath .
 
 
