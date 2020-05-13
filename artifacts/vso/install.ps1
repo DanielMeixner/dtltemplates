@@ -1,28 +1,28 @@
 [CmdletBinding()]
 param(
-    # .
+    # Email Address of user. Will be used to send authentication code to
     [string] $mail,
 
-    # 
+    # Resource group in Azure which holds the VS Codespaces plan
     [string] $resourcegroup = "no-rg",
 
-    # 
+    # Azure subscription Id
     [string] $subscriptionid = "no-subscription-id",
     
-    # 
+    # VS Codespaces plan name
     [string] $planname = "no-plan-name",
 
-    # 
+    # Username of user on machine, e.g daniel
     [string] $user = "no-user",
 
-    # Minimum PowerShell version required to execute this script.
-    [SecureString] $password = "no-pw"
-
-    
+    # Password of user on machine
+    [SecureString] $password = "no-pw"    
 )
+# this is the url of the app forwarding the auth code to the mail address
+$authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f06675f48646998a91d97a55a56235/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50KJExnmWKyTiN5WwT1X8o6ekd7KAOZwqboO-VWdZig"
 
-
-####### Give user logon as service permission
+### Give user logon as service permission
+Write-Host "Giving logonAsService permissions to user..."
 $filter='name="'+$user+'"'
 $filter
 $res=Get-WmiObject win32_useraccount -Filter $filter | select sid
@@ -63,29 +63,17 @@ Set-Content -Path $ImportFile -Value $FileContent
 secedit /import /db $SecDb /cfg $ImportFile
 secedit /configure /db $SecDb
 
-####  now the user should have "logon as svc permissions"
+###  now the user should have "logon as svc permissions"
 
 
-
-
-# Prepare reg file
-# (Get-Content .\vso.reg) -replace '____OBJECTNAME____', (".\\"+$user) | Set-Content .\vso.reg
-# (Get-Content .\vso.reg) -replace '____KEYNAME____', ("vso.$env:computername."+$user)| Set-Content .\vso.reg
-# (Get-Content .\vso.reg) -replace '____DISPLAYNAME____', 'Visual Studio Online (installed via DTL)' | Set-Content .\vso.reg
-# Get-Content .\vso.reg
-
-# # register service
-# reg import .\vso.reg
-
-# show pw and user in plaintext
+# convert pw to plaintext to pass it to watcher
+Write-Host "Converting pw ..."
 $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
 $decryptedpw = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
 [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
-Write-Host "Decrypted PW: " + $decryptedpw + " User:  " +$user
-whoami
-
 
 ### download vso installer
+Write-Host "Downloading installer ..."
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
@@ -101,91 +89,29 @@ Expand-Archive -Path $tempdestination -Destination $destination -Force
 Write-Host "Installed VSO to:" $destination
 Write-Host "Run vso start to create your environment!"
 
-$runpath = $destination + "\vso.exe"
+$vsoexepath = $destination + "\vso.exe"
 
 
-
+# guid will be used to identify env
 $guid = New-Guid
-Write-Host "GUID" + $guid
-$outfilename = ".\out" + $guid + ".txt"
-Write-Host $outfilename
-
-$vsoargs = " start -r " + $resourcegroup + " -s " + $subscriptionid + " --plan-name " + $planname +  " -n " + "DTL_"+ $env:computername +"_"+ $guid 
-
-Write-Host "argslist: " + $vsoargs
+Write-Host "Generated guid: $guid" 
 
 
-### register for vso; vso start --service ...
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
+### register for vso; 
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force  
 
-
-#$credential = New-Object System.Management.Automation.PSCredential $user, $password
-
-Write-Host "USER" + $user
-Write-Host "PW" + $password
-
-### execute vso 
-# Start-Process $runpath  -ArgumentList $vsoargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt #-Credential $credential
-
-### psexec
-# $psexecpath =".\PsExec.exe"
-# $workdir = "C:\Users\$user\vso\"
-# $psexecargs =" -w $workdir -u $user -p $decryptedpw -accepteula $runpath $vsoargs "
-# if (!(Test-Path -path $workdir)) {New-Item $workdir -Type Directory}
-# Write-Host $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
-# Start-Process $psexecpath -ArgumentList $psexecargs -RedirectStandardOutput $outfilename -WindowStyle Hidden -RedirectStandardInput .\input.txt 
- 
-
-
-$psexecOutputFile= "c:\vso_out_.txt"
+$psexecOutputFile= "c:\vso_out_$guid.txt"
 ### Start file watcher in background waiting for file. 
-# Start-Process powershell -RedirectStandardOutput  "c:\watcherout.txt"  -ArgumentList ".\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw -ExecutionPolicy bypass"
+Start-Process  powershell  -RedirectStandardOutput  "c:\watcher_out_$guid.txt"  -ArgumentList "-ExecutionPolicy Bypass -File .\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw -authrelayurl $authrelayurl"
 
-Start-Process  powershell  -RedirectStandardOutput  "c:\watcherout.txt"  -ArgumentList "-ExecutionPolicy Bypass -File .\watcher.ps1 -mail $mail -filename $psexecOutputFile -user $user -decryptedpw $decryptedpw "
-
-### Start PSExec in Forground and write to file
-### vso will do the registration but not as service
-### file watcher will wait for the registration to complete, create a service and kill the vso proc
-# Write-Host "PSEXEC" "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "-r"  $resourcegroup  "-s"  $subscriptionid  "--plan-name" $planname   "-n"  "DTL_" $env:computername "_"+ $guid > $psexecOutputFile
-Write-Host "PSEXEC" "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n"  "DTL_" > $psexecOutputFile
+### Start PSExec in Forground and write output to file.
+### -k makes sure that no questions will be asked
+### vso will do the registration but will be running as process not as service-
+### File watcher will wait for the registration to complete, create a service and kill the vso proc.
 $machinename= "DTL_$env:computername_$guid"
-.\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" c:\Vsonline\vso.exe "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n" $machinename  > $psexecOutputFile
-
-# ### wait for selfhosted file
-# $selfhostedfilepath="C:\Windows\SysWOW64\config\systemprofile\.vsonline\selfHosted.json"
-
-# while (!(Test-Path $selfhostedfilepath )) { Start-Sleep 10 }
-
-# ### create copy of file
-# $dtlfolder="C:\Users\$user\.dtl\"
-# if (!(Test-Path -path $dtlfolder)) {New-Item $dtlfolder -Type Directory}
-# Copy-Item -Path  $selfhostedfilepath $dtlfolder
+.\psexec \\127.0.0.1 "-u" "$user" "-accepteula" "-p" "$decryptedpw" $vsoexepath "start" "-k" "--plan-id" "/subscriptions/$subscriptionid/resourceGroups/$resourcegroup/providers/Microsoft.VSOnline/plans/$planname"   "-n" $machinename  > $psexecOutputFile
 
 
-# ### copy file back to user dir
-# $vsofolder="C:\Users\$user\.vsonline\"
-# if (!(Test-Path -path $vsofolder)) {New-Item $vsofolder -Type Directory}
-# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
-
-# ### replace user
-# $file= "C:\Users\$user\.vsonline\selfHosted.json"
-# $regex = '("runAsUser)[^.]*'
-# (Get-Content $file) -replace $regex, ('"runAsUser"' + ":" + '"'+".\\$user" + '",')  | Set-Content $file
-
-# ### replace workpath
-# New-Item "C:\\Users\\$user\\vso" -Type Directory
-# $regexws = '("workspacePath)[^,]*'
-# (Get-Content $file) -replace $regexws, ('"workspacePath"' + ":" + '"'+"C:\\Users\\$user\\vso" + '"')  | Set-Content $file
-
-# Write-Host ".vsonline - modified"
-# Get-Content $file
-# # Write-Host "dtl - original file"
-# # Get-Content $dtlfolder"selfHosted.json"
-
-# ### create computername dir and copy file to it
-# $computernamedir="C:\Users\$user.$env:computername\"
-# New-Item $computernamedir -Type Directory
-# Copy-Item -Path  $dtlfolder"selfHosted.json" $vsofolder
 
 
 

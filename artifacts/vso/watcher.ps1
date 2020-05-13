@@ -1,25 +1,26 @@
 [CmdletBinding()]
 param(
-    # .
+    # mail address will be used to send auth code
     [string] $mail,
 
-    # 
+    # password for user on machine, needed for registration of service
     [string] $decryptedpw = "no-pw",
 
-    # 
+    # user which will be used for running service. needs logonAsService permissions
     [string] $user = "no-user",
     
-    [string] $filename
+    # name of file to be watched for content
+    [string] $filename,
+
+    [string] $authrelayurl
+
 )
 
-Write-Host "Start watcher for file $filename" 
-$authrelayurl = "https://prod-95.westeurope.logic.azure.com:443/workflows/23f06675f48646998a91d97a55a56235/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50KJExnmWKyTiN5WwT1X8o6ekd7KAOZwqboO-VWdZig"
+Write-Host "Start watcher for file $filename ..." 
+
 
 ### wait for file to exist
-Start-Sleep 5
 while (!(Test-Path $filename )) { Start-Sleep 10; Write-Host "Waiting for file $filename"; }
-
-### Post file content to relay logic app
 
 ### wait for file to contain "to sign in... "
 while(!((Get-Content $filename |  Select-String "sign in" ) -ne $null ))
@@ -35,19 +36,22 @@ $params = @{
     mail    = $mail + ''
     message = $res + ''
 }
-Write-Host "Start web Request"
-Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
-Write-Host "sended"
 
-### now wait for 
-Start-Sleep 120
+### Post file content to relay logic app
+Invoke-WebRequest -Uri $authrelayurl -Method Post -Body ($params | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing
+Write-Host "Posted to service."
+
+### now wait for some additional time to make sure registration is completed by vso.exe running as a process already.
+$seflhostedfilepath = "C:\Users\$user\.vsonline\selfHosted.json"
+while (!(Test-Path $seflhostedfilepath )) { Start-Sleep 10; Write-Host "Waiting for file $seflhostedfilepath"; }
+
 
 #### register vso service
 sc.exe create "vso.$env:computername.$user"  binpath="c:\VSOnline\vso.exe vmagent -s -t" obj=".\$user" password=$decryptedpw start=auto
-Write-Host "service created"
+Write-Host "Service created."
 
 
 # ### kill process 
 $proc=Get-Process vso
 $proc.kill()
-Write-Host "process killed"
+Write-Host "Process killed."

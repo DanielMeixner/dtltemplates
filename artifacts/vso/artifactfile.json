@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
-  "title": "VSO",
+  "title": "VS CodeSpaces",
   "publisher": "DanielMeixner",
-  "description": "Registers a headless, self-hosted VS Online environment.",
+  "description": "Registers a headless, self-hosted environment available via VS CodeSpaces.",
   "tags": [
     "DevBox"
   ],
@@ -11,8 +11,14 @@
     "mail": {
       "type": "string",
       "displayName": "mail",
-      "defaultValue":"daniel.meixner@microsoft.com",
+      "defaultValue": "daniel.meixner@microsoft.com",
       "description": "Email address where code is sent to."
+    },
+    "subscriptionid": {
+      "type": "string",
+      "displayName": "subscriptionid",
+      "description": "Subscription ID which holds the VSO Plan.",
+      "defaultValue": ""
     },
     "resourcegroup": {
       "type": "string",
@@ -20,23 +26,17 @@
       "description": "Resource Group of VSO plan",
       "defaultValue": "vso-rg-1d9890a"
     },
-    "subscriptionid": {
-      "type": "string",
-      "displayName": "subscriptionid",
-      "description": "Subscription ID",
-      "defaultValue": ""
-    },
     "planname": {
       "type": "string",
       "displayName": "planname",
-      "description": "Name of VSO Plan",
+      "description": "Name of VSO Plan.",
       "defaultValue": "vso-plan-westeurope-2"
     },
     "user": {
       "type": "string",
       "displayName": "user",
-      "description": "Username",
-      "defaultValue": "danmeix"
+      "description": "Username. User be available on machine. A service will be registerd running with this account.",
+      "defaultValue": "daniel"
     },
     "password": {
       "type": "securestring",
